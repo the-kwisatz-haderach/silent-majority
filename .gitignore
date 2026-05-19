@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+
+# Environment variables — keep .env.example files, ignore everything else
+.env
+.env.local
+.env.*.local
+
+# TypeScript build output
+backend/dist/
+
+# Next.js build output
+frontend/.next/
+frontend/out/
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# macOS
+.DS_Store
+
+# Editor
+.idea/
+*.swp
+*.swo

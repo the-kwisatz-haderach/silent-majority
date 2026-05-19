@@ -1,0 +1,75 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String    @id @default(cuid())
+  email     String    @unique
+  name      String
+  password  String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  posts     Post[]
+  comments  Comment[]
+  polls     Poll[]
+  votes     Vote[]
+}
+
+model Post {
+  id        String    @id @default(cuid())
+  title     String
+  content   String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  author    User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId  String
+  comments  Comment[]
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId  String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId    String
+}
+
+model Poll {
+  id        String       @id @default(cuid())
+  question  String
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  author    User         @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId  String
+  options   PollOption[]
+  votes     Vote[]
+}
+
+model PollOption {
+  id     String @id @default(cuid())
+  text   String
+  poll   Poll   @relation(fields: [pollId], references: [id], onDelete: Cascade)
+  pollId String
+  votes  Vote[]
+}
+
+model Vote {
+  id           String     @id @default(cuid())
+  createdAt    DateTime   @default(now())
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       String
+  poll         Poll       @relation(fields: [pollId], references: [id], onDelete: Cascade)
+  pollId       String
+  pollOption   PollOption @relation(fields: [pollOptionId], references: [id], onDelete: Cascade)
+  pollOptionId String
+
+  @@unique([userId, pollId])
+}
